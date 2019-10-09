@@ -35,6 +35,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 
@@ -42,6 +43,17 @@ import java.util.*;
  *
  */
 public class CreateOrganizationTest {
+	final private String contact_phone_no=Faker.instance().phoneNumber().cellPhone().replaceAll("-", "").replaceAll("\\.", "");
+   final private String owner_phone=Faker.instance().phoneNumber().cellPhone().replaceAll("-", "").replaceAll("\\.", "");
+   final private String manager_phone=Faker.instance().phoneNumber().cellPhone().replaceAll("-", "").replaceAll("\\.", "");
+   final private String itadmin_phone=Faker.instance().phoneNumber().cellPhone().replaceAll("-", "").replaceAll("\\.", "");
+   final private String orgadmin_phone=Faker.instance().phoneNumber().cellPhone().replaceAll("-", "").replaceAll("\\.", "");
+     final private String contact_email =Faker.instance().internet().emailAddress();
+     final private String owner_person_email =Faker.instance().internet().emailAddress();
+     final private String manager_email =Faker.instance().internet().emailAddress();
+     final private String itadmin_email =Faker.instance().internet().emailAddress();
+     final private String orgadmin_email =Faker.instance().internet().emailAddress();
+
 	private WebDriver driver;
 	private Map<String, Object> vars;
 	JavascriptExecutor js;
@@ -53,6 +65,7 @@ public class CreateOrganizationTest {
 		driver = new ChromeDriver();
 		js = (JavascriptExecutor) driver;
 		vars = new HashMap<String, Object>();
+		 
 	}
 
 	@After
@@ -66,21 +79,22 @@ public class CreateOrganizationTest {
 		vars.put("Org_name", "Twilio" + new Random().nextInt(100));
 		vars.put("Org_WebSite", "http://salesken.ai.com");
 		vars.put("contact_name", "Rohit kumar");
-		vars.put("contact_email", Faker.instance().internet().emailAddress());
+		vars.put("contact_email", contact_email);
 		vars.put("Total_Emp", "500");
-		vars.put("contact_phone_no", Faker.instance().phoneNumber().cellPhone().replaceAll("-", ""));
+		//System.out.println(Faker.instance().phoneNumber().cellPhone().replaceAll("-", "").replaceAll("\\.", ""));
+		vars.put("contact_phone_no", contact_phone_no);
 		vars.put("owner_person_name", "jagdev");
-		vars.put("owner_person_email", Faker.instance().internet().emailAddress());
-		vars.put("owner_phone", Faker.instance().phoneNumber().cellPhone().replaceAll("-", ""));
+		vars.put("owner_person_email", owner_person_email);
+		vars.put("owner_phone",owner_phone);
 		vars.put("manager_name", "Rohit Kumar");
-		vars.put("manager_email", Faker.instance().internet().emailAddress());
-		vars.put("manager_phone", Faker.instance().phoneNumber().cellPhone().replaceAll("-", ""));
+		vars.put("manager_email", manager_email);
+		vars.put("manager_phone", manager_phone);
 		vars.put("itadmin_name", "sunil verma");
-		vars.put("itadmin_email", Faker.instance().internet().emailAddress());
-		vars.put("itadmin_phone", Faker.instance().phoneNumber().cellPhone().replaceAll("-", ""));
+		vars.put("itadmin_email", itadmin_email);
+		vars.put("itadmin_phone", itadmin_phone);
 		vars.put("orgadmin_name", "anny");
-		vars.put("orgadmin_email", Faker.instance().internet().emailAddress());
-		vars.put("orgadmin_phone", Faker.instance().phoneNumber().cellPhone().replaceAll("-", ""));
+		vars.put("orgadmin_email", orgadmin_email);
+		vars.put("orgadmin_phone", orgadmin_phone);
 
 		driver.get("http://192.168.0.103:8080/index.jsp");
 		driver.manage().window().setSize(new Dimension(1296, 744));
@@ -96,39 +110,70 @@ public class CreateOrganizationTest {
 		driver.findElement(By.name("email")).sendKeys("admin1@istarindia.com");
 		driver.findElement(By.name("password")).sendKeys("test123");
 		driver.findElement(By.cssSelector(".btn")).click();
-		assertThat(driver.findElement(By.cssSelector(".swal-text")).getText(),
-				is("Username is wrong or account is Suspended."));
+	
+		    {
+			@SuppressWarnings("deprecation")
+			WebDriverWait wait = new WebDriverWait(driver, 30);
+			wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".swal-modal")));
+			}
+		assertThat(driver.findElement(By.cssSelector(".swal-text")).getText(),is("Username is wrong or account is Suspended."));
 		driver.findElement(By.cssSelector(".swal-button")).click();
+		
 		driver.findElement(By.name("email")).sendKeys("admin@istarindia.com");
 		driver.findElement(By.name("password")).sendKeys("test");
 		driver.findElement(By.cssSelector(".btn")).click();
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		      {
+				@SuppressWarnings("deprecation")
+				WebDriverWait wait = new WebDriverWait(driver, 30);
+				wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".swal-modal")));
+				}
+
 		assertThat(driver.findElement(By.cssSelector(".swal-text")).getText(), is("The password is wrong"));
 		driver.findElement(By.cssSelector(".swal-button")).click();
 		driver.findElement(By.name("email")).sendKeys("admin11@istarindia.com");
 		driver.findElement(By.name("password")).sendKeys("test");
 		driver.findElement(By.cssSelector(".btn")).click();
-		assertThat(driver.findElement(By.cssSelector(".swal-text")).getText(),
-				is("Username is wrong or account is Suspended."));
+		      {
+				@SuppressWarnings("deprecation")
+				WebDriverWait wait = new WebDriverWait(driver, 30);
+				wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".swal-modal")));
+				}
+		assertThat(driver.findElement(By.cssSelector(".swal-text")).getText(),is("Username is wrong or account is Suspended."));
 		driver.findElement(By.cssSelector(".swal-button")).click();
 		driver.findElement(By.name("email")).sendKeys("admin@istarindia.com");
 		driver.findElement(By.name("password")).sendKeys("test123");
 		driver.findElement(By.cssSelector(".btn")).click();
-		/*
-		 * driver.findElement(By.cssSelector(".istar_font-20")).click();
-		 * driver.findElement(By.xpath("//a[@href=\'/super_admin/profile\']")).click();
-		 * { String value = driver.findElement(By.id("username")).getAttribute("value");
-		 * assertThat(value, is("Vaibhav Verma")); } { String value =
-		 * driver.findElement(By.
-		 * cssSelector(".istar_group-desc:nth-child(3) .istar_disable-field"))
-		 * .getAttribute("value"); assertThat(value, is("admin@istarindia.com")); }
-		 */
+		
+		  {
+		      WebDriverWait wait = new WebDriverWait(driver, 30);
+		      wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("h2")));
+		    }
+		    assertThat(driver.findElement(By.cssSelector("h2")).getText(), is("Organizations"));
+				
+		 driver.findElement(By.cssSelector(".istar_font-20")).click();
+		  driver.findElement(By.xpath("//a[@href=\'/super_admin/profile\']")).click();
+		 {
+			 String value = driver.findElement(By.id("username")).getAttribute("value");
+		 
+			 assertThat(value, is("Vaibhav Verma")); 
+		  } 
+		  {
+			 String value = driver.findElement(By.cssSelector(".istar_group-desc:nth-child(3) .istar_disable-field"))
+		  .getAttribute("value"); assertThat(value, is("admin@istarindia.com"));
+		  }
+		
 		driver.findElement(By.linkText("Dashboard")).click();
+		  {
+		      WebDriverWait wait = new WebDriverWait(driver, 30);
+		      wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("h2")));
+		    }
+		    assertThat(driver.findElement(By.cssSelector("h2")).getText(), is("Organizations"));
 		driver.findElement(By.linkText("Create Organization")).click();
+		     {
+				@SuppressWarnings("deprecation")
+				WebDriverWait wait = new WebDriverWait(driver, 30);
+				wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".orgcard-body")));
+				}
 		assertThat(driver.findElement(By.cssSelector("p")).getText(), is("Create Organization"));
 		driver.findElement(By.id("exampleInputEmail1")).sendKeys(vars.get("Org_name").toString());
 		driver.findElement(By.id("url")).sendKeys(vars.get("Org_WebSite").toString());
@@ -136,12 +181,6 @@ public class CreateOrganizationTest {
 		driver.findElement(By.id("contact_email")).sendKeys(vars.get("contact_email").toString());
 		driver.findElement(By.id("employee_count")).sendKeys(vars.get("Total_Emp").toString());
 		driver.findElement(By.id("contact_phone")).sendKeys(vars.get("contact_phone_no").toString());
-		driver.findElement(By.id("industry_select")).click();
-		/*
-		 * { WebElement dropdown = driver.findElement(By.id("industry_select"));
-		 * dropdown.findElement(By.xpath("//option[. = 'Information Technology/IT']")).
-		 * click(); }
-		 */
 		Select dropdown = new Select(driver.findElement(By.id("industry_select")));
 		dropdown.selectByVisibleText("Information Technology/IT");
 		driver.findElement(By.id("industry_select")).click();
@@ -167,40 +206,101 @@ public class CreateOrganizationTest {
 		driver.findElement(By.name("orgadminmobile")).clear();
 		driver.findElement(By.name("orgadminmobile")).sendKeys(vars.get("orgadmin_phone").toString());
 		driver.findElement(By.cssSelector(".create_org")).click();
-		driver.findElement(By.name("mangername")).clear();
-		driver.findElement(By.linkText("Dashboard")).click();
-		List<WebElement> orgCards = driver.findElements(By.className("istar_teamCard"));
-		Boolean foundNewOrgCard = false;
-		for (WebElement orgCard : orgCards) {
+		 {
+		      WebDriverWait wait = new WebDriverWait(driver, 30);
+		      wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("h2")));
+		    }
+		    assertThat(driver.findElement(By.cssSelector("h2")).getText(), is("Organizations"));
+		
+
+		List<WebElement> orgCards_dashboard = driver.findElements(By.className("istar_teamCard"));
+		Boolean foundNewOrgCard_dashboard = false;
+		for (WebElement orgCard : orgCards_dashboard) {
 			WebElement header = orgCard.findElement(By.className("istar_teamCardHead"));
-			String orgName = header.findElement(By.tagName("p")).getText();
+			String orgName = header.findElement(By.cssSelector("p")).getText();
 
 			if (orgName.equalsIgnoreCase((String) vars.get("Org_name"))) {
-				// Found our org_card
-				foundNewOrgCard = true;
+				// Found new our org_card
+				assertThat(orgName, is(vars.get("Org_name").toString())); 
+			
+				orgCard.click();
+				    {
+						@SuppressWarnings("deprecation")
+						WebDriverWait wait = new WebDriverWait(driver, 30);
+						wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".orgcard-body")));
+						}
+		
+				      {
+					  String value = driver.findElement(By.name("orgname")).getAttribute("value");
+					  assertThat(value, is(vars.get("Org_name").toString())); 
+					   }
+				         
+				      { 
+				      String value = driver.findElement(By.name("website")).getAttribute("value");
+					  assertThat(value, is(vars.get("Org_WebSite").toString()));
+					  } 
+				      { String value =driver.findElement(By.name("contact_name")).getAttribute("value");
+					  assertThat(value, is(vars.get("contact_name").toString()));
+					  }
+				   
+					  { String value  = driver.findElement(By.name("contactphone")).getAttribute("value");
+					  assertThat(value, is(vars.get("contact_phone_no").toString()));
+					  } 
+					  { String value = driver.findElement(By.id("contact_email")).getAttribute("value");
+					  assertThat(value, is(vars.get("contact_email").toString()));
+					  }
+					  { String value = driver.findElement(By.name("empcount")).getAttribute("value");
+					  assertThat(value, is(vars.get("Total_Emp").toString())); 
+					  }
+					  
+						foundNewOrgCard_dashboard= true;
+				break;
 			}
 		}
-		assertTrue(foundNewOrgCard);
+		assertTrue(foundNewOrgCard_dashboard);
+		
+		
+		driver.findElement(By.linkText("Dashboard")).click();
 
-		// assertThat(driver.findElement(By.cssSelector("#\\31 28 >
-		// .istar_teamCardHead")).getText(),is("vars.get(\"Org_name\").toString()"));
-		/*
-		 * driver.findElement(By.cssSelector("#\\31 28 p:nth-child(3)")).click(); {
-		 * String value = driver.findElement(By.name("orgname")).getAttribute("value");
-		 * assertThat(value, is(vars.get("Org_name").toString())); } { String value =
-		 * driver.findElement(By.name("website")).getAttribute("value");
-		 * assertThat(value, is(vars.get("Org_WebSite").toString())); } { String value =
-		 * driver.findElement(By.name("contact_name")).getAttribute("value");
-		 * assertThat(value, is(vars.get("contact_name").toString())); } { String value
-		 * = driver.findElement(By.id("contact_phone")).getAttribute("value");
-		 * assertThat(value, is(vars.get("contact_phone_no").toString())); } { String
-		 * value = driver.findElement(By.id("contact_email")).getAttribute("value");
-		 * assertThat(value, is(vars.get("contact_email").toString())); } { String value
-		 * = driver.findElement(By.name("empcount")).getAttribute("value");
-		 * assertThat(value, is(vars.get("Total_Emp").toString())); }
-		 * driver.findElement(By.cssSelector(".ml-auto")).click();
-		 * driver.findElement(By.cssSelector(".dropdown-item:nth-child(3)")).click();
-		 */
+		
+		{
+		      WebDriverWait wait = new WebDriverWait(driver, 30);
+		      wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("h2")));
+		 }
+		    assertThat(driver.findElement(By.cssSelector("h2")).getText(), is("Organizations"));
+		    
+		    
+		    driver.findElement(By.linkText("License")).click();
+		    {
+		      WebDriverWait wait = new WebDriverWait(driver, 30);
+		      wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("h2")));
+		    }
+		    assertThat(driver.findElement(By.cssSelector("h2")).getText(), is("Organization Licenses"));
+		    
+			List<WebElement> orgCards_license = driver.findElements(By.className("teamCard"));//teamCard
+			Boolean foundNewOrgCard_license = false;
+			for (WebElement orgCard : orgCards_license) {
+				WebElement header = orgCard.findElement(By.className("teamCardHead"));
+				String orgName = header.findElement(By.cssSelector("p")).getText();
 
+				if (orgName.equalsIgnoreCase((String) vars.get("Org_name"))) {
+					// Found new our org_card
+					assertThat(orgName, is(vars.get("Org_name").toString())); 
+					foundNewOrgCard_license = true;
+					break;
+				}
+			}
+			
+			assertTrue(foundNewOrgCard_license);
+			
+			 driver.findElement(By.linkText("Analysis")).click();
+			 driver.findElement(By.linkText("Search")).click();
+		    Select dropdown1 = new Select(driver.findElement(By.id("org-selectbox")));
+			dropdown1.selectByVisibleText(vars.get("Org_name").toString());
+			driver.findElement(By.id("org-selectbox")).click();
+	        
+			driver.findElement(By.cssSelector(".ml-auto")).click();
+		    driver.findElement(By.cssSelector(".dropdown-item:nth-child(3)")).click();
+		    
 	}
 }
